@@ -1,7 +1,6 @@
-FROM runpod/worker-comfyui:5.8.5-base
+FROM runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04
 
-# Override the base CMD with our diagnostic handler
-RUN pip install --no-cache-dir runpod 2>/dev/null || true
+RUN pip install --no-cache-dir runpod
 
 COPY handler.py /handler.py
 
