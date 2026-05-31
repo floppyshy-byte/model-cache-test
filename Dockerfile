@@ -1,4 +1,4 @@
-FROM runpod/pytorch:2.4.0-py3.11-cuda12.4.1-devel-ubuntu22.04
+FROM python:3.11-slim
 
 RUN pip install --no-cache-dir runpod
 
