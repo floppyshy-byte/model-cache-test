@@ -62,15 +62,26 @@ def handler(event):
         if any(t in k.lower() for t in ["hf", "cache", "model", "transformers", "offline", "home", "runpod"])
     }
 
-    # 6. Disk usage
+    # 6. Disk usage at multiple paths to understand storage layout
     try:
         import shutil
-        du = shutil.disk_usage("/runpod-volume")
-        result["disk_runpod_volume"] = {
-            "total_gb": round(du.total / 1e9, 1),
-            "used_gb": round(du.used / 1e9, 1),
-            "free_gb": round(du.free / 1e9, 1),
+        paths = {
+            "root_fs": "/",
+            "runpod_volume": "/runpod-volume",
         }
+        if result["cache_root_exists"]:
+            paths["cache_hub"] = CACHE_ROOT
+            repo_dir = os.path.join(CACHE_ROOT, "models--floppyshy--model-cache-test")
+            if os.path.isdir(repo_dir):
+                paths["cache_repo"] = repo_dir
+        result["disk"] = {}
+        for label, p in paths.items():
+            du = shutil.disk_usage(p)
+            result["disk"][label] = {
+                "total_gb": round(du.total / 1e9, 1),
+                "used_gb": round(du.used / 1e9, 1),
+                "free_gb": round(du.free / 1e9, 1),
+            }
     except Exception:
         pass
 
