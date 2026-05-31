@@ -1,6 +1,6 @@
-FROM python:3.11-slim
+FROM runpod/worker-comfyui:5.8.5-base
 
-RUN pip install --no-cache-dir runpod
+RUN pip install --no-cache-dir runpod 2>/dev/null || true
 
 COPY handler.py /handler.py
 
