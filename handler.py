@@ -115,7 +115,7 @@ def handler(event):
 
     # 8. Installed library versions (to debug tokenizer issue)
     result["library_versions"] = {}
-    for lib in ["transformers", "sentencepiece", "diffusers", "torch", "tokenizers", "tiktoken", "runpod", "accelerate", "numpy"]:
+    for lib in ["transformers", "sentencepiece", "diffusers", "torch", "tokenizers", "tiktoken", "runpod", "accelerate", "numpy", "protobuf"]:
         try:
             mod = __import__(lib)
             result["library_versions"][lib] = getattr(mod, "__version__", "unknown")
