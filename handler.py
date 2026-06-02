@@ -85,6 +85,34 @@ def handler(event):
     except Exception:
         pass
 
+    # 7. SHA256 of spiece.model to verify corruption
+    try:
+        import hashlib
+        spiece_path = os.path.join(
+            CACHE_ROOT,
+            "models--thudm--cogvideox-2b",
+            "snapshots",
+            "1137dacfc2c9c012bed6a0793f4ecf2ca8e7ba01",
+            "tokenizer",
+            "spiece.model"
+        )
+        result["spiece_model_path"] = spiece_path
+        result["spiece_model_exists"] = os.path.isfile(spiece_path)
+        if result["spiece_model_exists"]:
+            h = hashlib.sha256()
+            with open(spiece_path, "rb") as f:
+                while chunk := f.read(8192):
+                    h.update(chunk)
+            result["spiece_model_sha256"] = h.hexdigest()
+            result["spiece_model_size"] = os.path.getsize(spiece_path)
+            # Also read first few bytes as hex for inspection
+            with open(spiece_path, "rb") as f:
+                result["spiece_model_header_hex"] = f.read(32).hex()
+        else:
+            result["spiece_model_sha256"] = "(file not found)"
+    except Exception as e:
+        result["spiece_model_error"] = str(e)
+
     return result
 
 
