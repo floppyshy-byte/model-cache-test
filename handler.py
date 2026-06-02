@@ -122,6 +122,23 @@ def handler(event):
         except Exception:
             result["library_versions"][lib] = "(not installed)"
 
+    # 9. Try actually loading the tokenizer to verify it works
+    try:
+        from transformers import T5Tokenizer
+        tokenizer_path = os.path.join(
+            CACHE_ROOT,
+            "models--thudm--cogvideox-2b",
+            "snapshots",
+            "1137dacfc2c9c012bed6a0793f4ecf2ca8e7ba01",
+            "tokenizer"
+        )
+        tokenizer = T5Tokenizer.from_pretrained(tokenizer_path, local_files_only=True)
+        result["tokenizer_load_test"] = "SUCCESS"
+        result["tokenizer_vocab_size"] = len(tokenizer)
+    except Exception as e:
+        result["tokenizer_load_test"] = "FAILED"
+        result["tokenizer_load_error"] = str(e)
+
     return result
 
 
