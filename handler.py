@@ -113,6 +113,15 @@ def handler(event):
     except Exception as e:
         result["spiece_model_error"] = str(e)
 
+    # 8. Installed library versions (to debug tokenizer issue)
+    result["library_versions"] = {}
+    for lib in ["transformers", "sentencepiece", "diffusers", "torch", "tokenizers", "tiktoken", "runpod", "accelerate", "numpy"]:
+        try:
+            mod = __import__(lib)
+            result["library_versions"][lib] = getattr(mod, "__version__", "unknown")
+        except Exception:
+            result["library_versions"][lib] = "(not installed)"
+
     return result
 
 
